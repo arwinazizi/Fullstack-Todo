@@ -1,16 +1,31 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import './index.css';
+import Login from './Login.jsx';
+
 
 const API_URL = 'http://localhost:3000/tasks';
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+
 
   useEffect(() => {
-    axios.get(API_URL).then((res) => setTasks(res.data));
-  }, []);
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios
+      .get(API_URL)
+      .then((res) => setTasks(res.data))
+      .catch(() => {
+        localStorage.removeItem('token');
+        setIsLoggedIn(false);
+      });
+  }, [isLoggedIn]);
+
 
   const createTask = async () => {
     if (!title.trim()) return;
@@ -30,8 +45,19 @@ function App() {
     setTasks(tasks.map((t) => (t._id === task._id ? res.data : t)));
   };
 
+  if (!isLoggedIn) return <Login onLogin={() => setIsLoggedIn(true)} />;
+
   return (
     <div className='container'>
+      <button
+        onClick={() => {
+          localStorage.removeItem('token');
+          setIsLoggedIn(false);
+        }}
+      >
+        Logout
+      </button>
+
       <h1>📝 Todo List</h1>
 
       <div className='input-row'>

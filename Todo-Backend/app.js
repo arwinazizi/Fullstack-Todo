@@ -2,13 +2,15 @@ const express = require('express');
 const connectToMongoose = require('./db/mongoose') // new connection file
 const taskRoutes = require('./routes/tasks');
 const cors = require('cors');
-
+const authRoutes = require('./routes/auth');
 
 
 const app = express();
 app.use(cors());
 // Middleware to parse JSON
 app.use(express.json());
+
+app.use('/auth', authRoutes);
 
 // Optional: Logging middleware
 app.use((req, res, next) => {
