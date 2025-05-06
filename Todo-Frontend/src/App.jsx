@@ -4,7 +4,7 @@ import './index.css';
 import Login from './Login.jsx';
 
 
-const API_URL = 'http://localhost:3000/tasks';
+const API_URL = `${import.meta.env.VITE_API_URL}/tasks`;
 
 function App() {
   const [tasks, setTasks] = useState([]);
