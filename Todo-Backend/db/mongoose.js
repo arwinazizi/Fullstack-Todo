@@ -1,13 +1,19 @@
 const mongoose = require('mongoose');
 
-async function connectToMongoosee() {
-    try {
-        await mongoose.connect('mongodb://localhost:27017/taskdb');
-        console.log('✅ Mongoose connected');
-    } catch (err) {
-        console.error('❌ Mongoose connection error:', err);
-        process.exit(1);
-    }
+console.log('✅ Connected to DB:', mongoose.connection.name);
+
+
+async function connectToMongoose() {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('✅ Mongoose connected');
+  } catch (err) {
+    console.error('❌ Mongoose connection error:', err);
+    process.exit(1);
+  }
 }
 
-module.exports = connectToMongoosee;
+module.exports = connectToMongoose;
